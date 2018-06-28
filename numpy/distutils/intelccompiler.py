@@ -20,7 +20,7 @@ class IntelCCompiler(UnixCCompiler):
 
         v = self.get_version()
         mpopt = 'openmp' if v and v < '15' else 'qopenmp'
-        self.cc_exe = ('icc -fPIC -fp-model strict -O3 '
+        self.cc_exe = ('icc -fPIC -fp-model strict -O3 -march=native -mtune=native -ftree-vectorize '
                        '-fomit-frame-pointer -{}').format(mpopt)
         compiler = self.cc_exe
 
@@ -59,9 +59,11 @@ class IntelEM64TCCompiler(UnixCCompiler):
         UnixCCompiler.__init__(self, verbose, dry_run, force)
 
         v = self.get_version()
+        #mpopt = 'openmp' if v and v < '15' else 'qopenmp'
+        #self.cc_exe = ('icc -m64 -fPIC -fp-model strict -O3 -march=native -mtune=native -ftree-vectorize '
+        #               '-fomit-frame-pointer -{}').format(mpopt)
         mpopt = 'openmp' if v and v < '15' else 'qopenmp'
-        self.cc_exe = ('icc -m64 -fPIC -fp-model strict -O3 '
-                       '-fomit-frame-pointer -{}').format(mpopt)
+        self.cc_exe = ('icc -m64 -O3 -g -fPIC -fp-model strict -I/home/zhcui/program/libxsmm_ZHC_installed/include -fomit-frame-pointer -xhost -{}').format(mpopt)
         compiler = self.cc_exe
 
         if platform.system() == 'Darwin':
@@ -74,7 +76,7 @@ class IntelEM64TCCompiler(UnixCCompiler):
                              archiver='xiar' + ' cru',
                              linker_exe=compiler + ' -shared-intel',
                              linker_so=compiler + ' ' + shared_flag +
-                             ' -shared-intel')
+                             ' -shared-intel -L/home/zhcui/program/libxsmm_ZHC_installed/lib -Wall -lxsmm')
 
 
 if platform.system() == 'Windows':

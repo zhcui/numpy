@@ -124,7 +124,9 @@ class IntelEM64TFCompiler(IntelFCompiler):
     def get_flags_opt(self):  # Scipy test failures with -O2
         v = self.get_version()
         mpopt = 'openmp' if v and v < '15' else 'qopenmp'
-        return ['-fp-model strict -O1 -{}'.format(mpopt)]
+        #return ['-fp-model strict -O1 -{}'.format(mpopt)] # ZHCNOTE -O3?
+        return ['-xhost -fp-model strict -fPIC -{}'.format(mpopt)]
+                 
 
     def get_flags_arch(self):
         return ['']
